@@ -6,13 +6,15 @@ import '../screens/home_screen.dart';
 
 abstract class HomeState extends State<HomeScreen> {
   @protected
-  Timer mTimer;
+  Timer mGameTimer;
+  Timer mShotclockTimer;
   Duration mTickDuration = new Duration(milliseconds: 1);
-  int mGameTimeSeconds = 1500; // 25 minutes
+  int mDefaultGameTimeMilliseconds = 8 * 60 * 1000;
+  int mDefaultShotclockTimeMilliseconds = 35 * 1000;
   int mTimeSeconds = 300; // 5 minutes
-  int mCurrentTimeSeconds = 1500;
-  bool running = false;
-  bool working = true;
+  int mCurrentGameTimeMilliseconds = 0;
+  int mCurrentShotclockTimeMilliseconds = 0;
+  bool mIsRunning = false;
 
   @override
   void dispose() {
@@ -23,86 +25,49 @@ abstract class HomeState extends State<HomeScreen> {
   @protected
   void start() {
     setState(() {
-      running = true;
+      mIsRunning = true;
     });
-    timer = new Timer.periodic(tickDuration, _tick);
+    mGameTimer = new Timer.periodic(mTickDuration, _shotClockTick);
+    mShotclockTimer = new Timer.periodic(mTickDuration, _gameClockTick);
   }
 
   @protected
   void stop() {
     setState(() {
-      running = false;
+      mIsRunning = false;
     });
-    timer.cancel();
+    mGameTimer.cancel();
+    mShotclockTimer.cancel();
   }
 
   @protected
   void reset() {
     setState(() {
-      currentTimeSeconds = workTimeSeconds;
-      working = true;
+      mCurrentGameTimeMilliseconds = mDefaultGameTimeMilliseconds;
+      mCurrentShotclockTimeMilliseconds = mDefaultShotclockTimeMilliseconds;
     });
   }
 
-  @protected
-  void updateWorkTime(String action) {
-    int seconds = _secondsForTimeUpdate(action);
 
-    if (_addableTime(action, workTimeSeconds) ||
-        _removableTime(action, workTimeSeconds)) {
+  void _gameClockTick(Timer time) {
+    if (mCurrentGameTimeMilliseconds > 0) {
       setState(() {
-        workTimeSeconds = workTimeSeconds + seconds;
+        mCurrentGameTimeMilliseconds--;
       });
     }
   }
 
-  @protected
-  void updateBreakTime(String action) {
-    int seconds = _secondsForTimeUpdate(action);
 
-    if (_addableTime(action, breakTimeSeconds) ||
-        _removableTime(action, breakTimeSeconds)) {
+  void _shotClockTick(Timer time) {
+    if (mCurrentShotclockTimeMilliseconds > 0) {
       setState(() {
-        breakTimeSeconds = breakTimeSeconds + seconds;
+        mCurrentShotclockTimeMilliseconds--;
       });
     }
   }
 
-  void _tick(Timer time) {
-    if (currentTimeSeconds <= 0) {
-      setState(() {
-        currentTimeSeconds = working ? breakTimeSeconds : workTimeSeconds;
-        working = !working;
-      });
-    } else {
-      setState(() {
-        currentTimeSeconds--;
-      });
-    }
+  bool _resetGameclockTime(int timeMiliseconds) {
   }
 
-  int _secondsForTimeUpdate(String action) {
-    switch (action) {
-      case ('add'):
-        return 60;
-        break;
-      case ('remove'):
-        return -60;
-        break;
-      default:
-        throw ArgumentError;
-    }
+  bool _resetShotclockTime(int timeMiliseconds) {
   }
-
-  bool _addableTime(String action, int timeSeconds) {
-    int timeMinutes = timeSeconds ~/ 60;
-
-    return action == 'add' && timeMinutes <= 58;
-  }
-
-  bool _removableTime(String action, int timeSeconds) {
-    int timeMinutes = timeSeconds ~/ 60;
-
-    return action == 'remove' && timeMinutes >= 2;
-  }
-}

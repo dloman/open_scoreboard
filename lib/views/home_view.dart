@@ -17,7 +17,7 @@ class HomeView extends HomeState {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
             ClockView(
-              currentTimeSeconds: mGameTimeSeconds,
+              currentTimeSeconds: mCurrentGameTimeMilliseconds,
             ),
             ClockControls(
               running: running,
@@ -30,26 +30,8 @@ class HomeView extends HomeState {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: <Widget>[
-                  EditableMinutes(
-                    label: 'Work',
-                    currentMinutes: (workTimeSeconds ~/ 60).toString(),
-                    addFunction: () {
-                      updateWorkTime('add');
-                    },
-                    removeFunction: () {
-                      updateWorkTime('remove');
-                    },
-                  ),
-                  EditableMinutes(
-                    label: 'Rest',
-                    currentMinutes: (breakTimeSeconds ~/ 60).toString(),
-                    addFunction: () {
-                      updateBreakTime('add');
-                    },
-                    removeFunction: () {
-                      updateBreakTime('remove');
-                    },
-                  ),
+                  Text(mCurrentGameTimeMilliseconds.toString()),
+                  Text(mCurrentShotclockTimeMilliseconds.toString()),
                 ],
               ),
             ),

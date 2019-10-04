@@ -2,26 +2,18 @@ import 'package:flutter/material.dart';
 
 import '../colors.dart';
 
-class EditableMinutes extends StatelessWidget {
+class EditableNumber extends StatelessWidget {
   final String label;
-  final String currentMinutes;
+  final String currentNumber;
   final Function addFunction;
   final Function removeFunction;
 
-  EditableMinutes({
+  EditableNumber({
     this.label,
-    this.currentMinutes,
+    this.currentNumber,
     this.addFunction,
     this.removeFunction,
   });
-
-  String _currentMinutesLabel() {
-    if (currentMinutes == "1") {
-      return "minute";
-    } else {
-      return "minutes";
-    }
-  }
 
   @override
   build(BuildContext context) {
@@ -44,7 +36,7 @@ class EditableMinutes extends StatelessWidget {
             onPressed: addFunction,
             color: kOpenScoreboardBlueDark,
           ),
-          Text("$currentMinutes ${_currentMinutesLabel()}"),
+          Text("$currentNumber"),
           RaisedButton(
             child: Icon(Icons.remove),
             onPressed: removeFunction,

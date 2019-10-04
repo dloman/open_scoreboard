@@ -4,17 +4,17 @@ import '../colors.dart';
 
 class ClockControls extends StatelessWidget {
   final bool running;
-  final int currentTimeSeconds;
   final Function startFunction;
   final Function stopFunction;
-  final Function resetFunction;
+  final Function resetShotFunction;
+  final Function resetGameFunction;
 
   ClockControls({
     this.running,
-    this.currentTimeSeconds,
     this.startFunction,
     this.stopFunction,
-    this.resetFunction,
+    this.resetShotFunction,
+    this.resetGameFunction,
   });
 
   @override
@@ -24,19 +24,19 @@ class ClockControls extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: <Widget>[
           RaisedButton(
-            onPressed: running ? null : startFunction,
-            child: Text('Start'),
-            color: kOpenScoreboardGreen,
+            onPressed: running ? stopFunction : startFunction,
+            child: running ? Text('Stop') : Text('Start'),
+            color: kOpenScoreboardBlue,
           ),
           RaisedButton(
-            onPressed: running ? stopFunction : null,
-            child: Text('Stop'),
+            onPressed: resetShotFunction,
+            child: Text('Reset Shot Clock'),
             color: kOpenScoreboardRedLight,
           ),
           RaisedButton(
-            onPressed: running ? null : resetFunction,
-            child: Text('Reset'),
-            color: kOpenScoreboardGreen,
+            onPressed: resetGameFunction,
+            child: Text('Reset Game Clock'),
+            color: kOpenScoreboardRedLight,
           ),
         ],
       ),

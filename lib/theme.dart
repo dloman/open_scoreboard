@@ -8,7 +8,7 @@ ThemeData _buildOpenScoreboardTheme() {
   final ThemeData base = ThemeData.light();
   return base.copyWith(
     accentColor: kOpenScoreboardRedLight,
-    primaryColor: kOpenScoreboardGreenLight,
-    scaffoldBackgroundColor: kOpenScoreboardGreenLight,
+    primaryColor: kOpenScoreboardBlueLight,
+    scaffoldBackgroundColor: kOpenScoreboardGreyDark,
   );
 }

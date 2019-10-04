@@ -15,6 +15,9 @@ abstract class HomeState extends State<HomeScreen> {
   int mCurrentGameTimeMilliseconds = 0;
   int mCurrentShotclockTimeMilliseconds = 0;
   bool mIsRunning = false;
+  int mHomeScore = 0;
+  int mAwayScore = 0;
+  int mQuarter = 0;
 
   @override
   void dispose() {
@@ -41,13 +44,18 @@ abstract class HomeState extends State<HomeScreen> {
   }
 
   @protected
-  void reset() {
+  void resetGameClock() {
     setState(() {
       mCurrentGameTimeMilliseconds = mDefaultGameTimeMilliseconds;
-      mCurrentShotclockTimeMilliseconds = mDefaultShotclockTimeMilliseconds;
     });
   }
 
+  @protected
+  void resetShotClock() {
+    setState(() {
+      mCurrentShotclockTimeMilliseconds = mDefaultShotclockTimeMilliseconds;
+    });
+  }
 
   void _gameClockTick(Timer time) {
     if (mCurrentGameTimeMilliseconds > 0) {
@@ -66,8 +74,28 @@ abstract class HomeState extends State<HomeScreen> {
     }
   }
 
-  bool _resetGameclockTime(int timeMiliseconds) {
+  @protected
+  void changeHomeScore(int Value) {
+    mHomeScore += Value;
+    if (mHomeScore < 0) {
+      mHomeScore = 0;
+    }
   }
 
-  bool _resetShotclockTime(int timeMiliseconds) {
+  @protected
+  void changeAwayScore(int Value) {
+    mAwayScore += Value;
+    if (mAwayScore < 0) {
+      mAwayScore = 0;
+    }
   }
+
+  @protected
+  void changeQuarter(int Value) {
+    mQuarter += Value;
+    if (mQuarter < 0) {
+      mQuarter = 0;
+    }
+
+  }
+}

@@ -2,18 +2,18 @@ import 'package:flutter/material.dart';
 
 import '../colors.dart';
 
-class ClockView extends StatelessWidget {
-  final int currentTimeSeconds;
+class GameClockView extends StatelessWidget {
+  final int currentTimeMilliseconds;
 
-  ClockView({
-    this.currentTimeSeconds,
+  GameClockView({
+    this.currentTimeMilliseconds,
   });
 
   String _stringTime() {
-    var minutes = (currentTimeSeconds ~/ 60);
+    var minutes = (currentTimeMilliseconds ~/ (60 * 1000));
     var minutesString = minutes.toString().padLeft(2, '0');
 
-    var seconds = currentTimeSeconds - (minutes * 60);
+    var seconds = (currentTimeMilliseconds - (minutes * 60 * 1000)) ~/ 1000;
     var secondsString = seconds.toString().padLeft(2, '0');
 
     return "$minutesString:$secondsString";
@@ -22,14 +22,14 @@ class ClockView extends StatelessWidget {
   @override
   build(BuildContext context) {
     return Container(
-      height: 250,
-      width: 250,
+      height: 150,
+      width: 350,
       decoration: BoxDecoration(
-        color: kOpenScoreboardGreenDark,
-        shape: BoxShape.circle,
+        color: kOpenScoreboardBlue,
+        shape: BoxShape.rectangle,
         border: Border.all(
-          color: kOpenScoreboardGreen,
-          width: 5,
+          color: kOpenScoreboardBlueDark,
+          width: 3,
         ),
       ),
       child: Center(

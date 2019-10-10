@@ -18,29 +18,65 @@ class EditableNumber extends StatelessWidget {
   @override
   build(BuildContext context) {
     return Container(
-      width: 100,
-      height: 150,
+      width: 130,
+      height: 200,
       decoration: BoxDecoration(
-        color: kOpenScoreboardBlue,
-        borderRadius: BorderRadius.circular(2.5),
+        color: kOpenScoreboardGreyDark,
+        border: Border.all(
+          color: kOpenScoreboardBlue,
+          width: 3,
+        ),
+        borderRadius: BorderRadius.circular(20),
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Text(
             label,
-            style: TextStyle(fontSize: 20),
+            style: TextStyle(
+              fontSize: 30,
+              color: Colors.white,
+            ),
           ),
-          RaisedButton(
-            child: Icon(Icons.add),
-            onPressed: addFunction,
-            color: kOpenScoreboardBlueDark,
-          ),
-          Text("$currentNumber"),
-          RaisedButton(
-            child: Icon(Icons.remove),
-            onPressed: removeFunction,
-            color: kOpenScoreboardBlueDark,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Flexible(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    RaisedButton(
+                      child: Text(
+                          "+",
+                          textAlign: TextAlign.center),
+                      onPressed: addFunction,
+                      textColor: Colors.white,
+                      color: kOpenScoreboardGreyDarker,
+                    ),
+                    RaisedButton(
+                      child: Text(
+                          "-",
+                          textAlign: TextAlign.center),
+                      onPressed: removeFunction,
+                      textColor: Colors.white,
+                      color: kOpenScoreboardGreyDarker,
+                    ),
+                  ],
+                ),
+                flex: 3
+                ),
+              Spacer(flex:1),
+              Flexible(
+                child: Text(
+                  currentNumber.toString().padLeft(2, '0'),
+                  style: TextStyle(
+                    fontSize: 55,
+                    color: Colors.white,
+                  ),
+                ),
+                flex: 6,
+                )
+            ],
           ),
         ],
       ),

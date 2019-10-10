@@ -12,6 +12,8 @@ class OpenScoreboard extends StatelessWidget {
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
+      DeviceOrientation.landscapeRight,
+      DeviceOrientation.landscapeLeft,
     ]);
 
     return MaterialApp(

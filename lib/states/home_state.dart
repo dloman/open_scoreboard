@@ -76,26 +76,31 @@ abstract class HomeState extends State<HomeScreen> {
 
   @protected
   void changeHomeScore(int Value) {
-    mHomeScore += Value;
-    if (mHomeScore < 0) {
-      mHomeScore = 0;
-    }
+    setState(() {
+      mHomeScore += Value;
+      if (mHomeScore < 0) {
+        mHomeScore = 0;
+      }
+    });
   }
 
   @protected
   void changeAwayScore(int Value) {
-    mAwayScore += Value;
-    if (mAwayScore < 0) {
-      mAwayScore = 0;
-    }
+    setState(() {
+      mAwayScore += Value;
+      if (mAwayScore < 0) {
+        mAwayScore = 0;
+      }
+    });
   }
 
   @protected
   void changeQuarter(int Value) {
-    mQuarter += Value;
-    if (mQuarter < 0) {
-      mQuarter = 0;
-    }
-
+    setState(() {
+      mQuarter += Value;
+      if (mQuarter < 0) {
+        mQuarter = 0;
+      }
+    });
   }
 }

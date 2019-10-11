@@ -5,6 +5,7 @@ import '../components/shotclock.dart';
 import '../components/gameClock.dart';
 import '../components/clock_controls.dart';
 import '../components/editable_number.dart';
+import '../components/score_quarter.dart';
 import '../components/status_text.dart';
 import '../colors.dart';
 
@@ -41,42 +42,19 @@ class HomeView extends HomeState {
             stopFunction: stop,
             resetShotFunction: resetShotClock,
           ),
-          Container(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: <Widget>[
-                EditableNumber(
-                  label: 'Home',
-                  currentNumber: mHomeScore.toString(),
-                  addFunction: () {
-                    changeHomeScore(1);
-                  },
-                  removeFunction: () {
-                    changeHomeScore(-1);
-                  },
-                ),
-                EditableNumber(
-                  label: 'Quarter',
-                  currentNumber: mQuarter.toString(),
-                  addFunction: () {
-                    changeQuarter(1);
-                  },
-                  removeFunction: () {
-                    changeQuarter(-1);
-                  },
-                ),
-                EditableNumber(
-                  label: 'Away',
-                  currentNumber: mAwayScore.toString(),
-                  addFunction: () {
-                    changeAwayScore(1);
-                  },
-                  removeFunction: () {
-                    changeAwayScore(-1);
-                  },
-                ),
-              ],
-            ),
+          ScoreQuarter(
+            currentHomeScore: mHomeScore.toString(),
+            currentAwayScore: mAwayScore.toString(),
+            currentQuarter: mQuarter.toString(),
+            addHomeFunction: () { changeHomeScore(1); },
+            removeHomeFunction: () { changeHomeScore(-1); },
+            resetHomeFunction: () { resetHomeScore(); },
+            addAwayFunction: () { changeAwayScore(1); },
+            removeAwayFunction: () { changeAwayScore(-1); },
+            resetAwayFunction: () { resetAwayScore(); },
+            addQuarterFunction: () { changeQuarter(1); },
+            removeQuarterFunction: () { changeQuarter(-1); },
+            resetQuarterFunction: () { resetQuarter(); },
           ),
         ],
       )

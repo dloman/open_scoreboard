@@ -71,7 +71,7 @@ class EditableNumber extends StatelessWidget {
                   currentNumber.toString().padLeft(2, '0'),
                   style: TextStyle(
                     fontSize: 55,
-                    color: Colors.white,
+                    color: kOpenScoreboardBlue,
                   ),
                 ),
                 flex: 6,

@@ -103,4 +103,24 @@ abstract class HomeState extends State<HomeScreen> {
       }
     });
   }
+
+  @protected
+  void resetHomeScore(){
+    setState( () {
+      mHomeScore = 0;
+    });
+  }
+
+  @protected
+  void resetAwayScore(){
+    setState( () {
+      mAwayScore = 0;
+    });
+  }
+  @protected
+  void resetQuarter(){
+    setState( () {
+      mQuarter = 0;
+    });
+  }
 }

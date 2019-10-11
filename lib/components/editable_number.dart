@@ -7,12 +7,14 @@ class EditableNumber extends StatelessWidget {
   final String currentNumber;
   final Function addFunction;
   final Function removeFunction;
+  final Function resetFunction;
 
   EditableNumber({
     this.label,
     this.currentNumber,
     this.addFunction,
     this.removeFunction,
+    this.resetFunction,
   });
 
   @override
@@ -78,6 +80,14 @@ class EditableNumber extends StatelessWidget {
                 )
             ],
           ),
+          RaisedButton(
+            child: Text(
+                "Reset",
+                textAlign: TextAlign.center),
+            onPressed: resetFunction,
+            textColor: Colors.white,
+            color: kOpenScoreboardGreyDarker,
+          )
         ],
       ),
     );

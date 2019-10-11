@@ -63,14 +63,53 @@ class HomeView extends HomeState {
 
   Center _GetLandscape() {
     return Center(
-      child: Column(
+      child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
-          GameClockView(
-            currentTimeMilliseconds: mCurrentGameTimeMilliseconds,
+          EditableNumber(
+            label: "Home",
+            currentNumber: mHomeScore.toString().padLeft(2, "0"),
+            addFunction: () { changeHomeScore(1); },
+            removeFunction: () { changeHomeScore(-1); },
+            resetFunction: () { resetHomeScore(); },
           ),
-          ShotClockView(
-            currentTimeMilliseconds: mCurrentShotclockTimeMilliseconds,
+          Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              GameClockView(
+                currentTimeMilliseconds: mCurrentGameTimeMilliseconds,
+                running: mIsRunning,
+                startFunction: start,
+                stopFunction: stop,
+                resetGameFunction: resetGameClock,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  ShotClockView(
+                    currentTimeMilliseconds: mCurrentShotclockTimeMilliseconds,
+                    running: mIsRunning,
+                    startFunction: start,
+                    stopFunction: stop,
+                    resetShotFunction: resetShotClock,
+                  ),
+                  EditableNumber(
+                    label: "Quarter",
+                    currentNumber: mQuarter.toString(),
+                    addFunction: () { changeQuarter(1); },
+                    removeFunction: () { changeQuarter(-1); },
+                    resetFunction: () { resetQuarter(); },
+                  ),
+                ],
+              ),
+            ],
+          ),
+          EditableNumber(
+            label: "Away",
+            currentNumber: mAwayScore.toString().padLeft(2, "0"),
+            addFunction: () { changeAwayScore(1); },
+            removeFunction: () { changeAwayScore(-1); },
+            resetFunction: () { resetAwayScore(); },
           ),
         ],
       )

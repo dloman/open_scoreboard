@@ -63,6 +63,9 @@ abstract class HomeState extends State<HomeScreen> {
         mCurrentGameTimeMilliseconds--;
       });
     }
+    else {
+      resetGameClock();
+    }
   }
 
 
@@ -71,6 +74,9 @@ abstract class HomeState extends State<HomeScreen> {
       setState(() {
         mCurrentShotclockTimeMilliseconds--;
       });
+    }
+    else {
+      resetShotClock();
     }
   }
 

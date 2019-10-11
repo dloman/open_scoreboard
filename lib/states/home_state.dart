@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'dart:io';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 
@@ -27,7 +29,7 @@ abstract class HomeState extends State<HomeScreen> {
 
   @protected
   void start() {
-    setState(() {
+    updateState(() {
       mIsRunning = true;
     });
     mGameTimer = new Timer.periodic(mTickDuration, _shotClockTick);
@@ -36,7 +38,7 @@ abstract class HomeState extends State<HomeScreen> {
 
   @protected
   void stop() {
-    setState(() {
+    updateState(() {
       mIsRunning = false;
     });
     mGameTimer.cancel();
@@ -45,21 +47,21 @@ abstract class HomeState extends State<HomeScreen> {
 
   @protected
   void resetGameClock() {
-    setState(() {
+    updateState(() {
       mCurrentGameTimeMilliseconds = mDefaultGameTimeMilliseconds;
     });
   }
 
   @protected
   void resetShotClock() {
-    setState(() {
+    updateState(() {
       mCurrentShotclockTimeMilliseconds = mDefaultShotclockTimeMilliseconds;
     });
   }
 
   void _gameClockTick(Timer time) {
     if (mCurrentGameTimeMilliseconds > 0) {
-      setState(() {
+      updateState(() {
         mCurrentGameTimeMilliseconds--;
       });
     }
@@ -71,7 +73,7 @@ abstract class HomeState extends State<HomeScreen> {
 
   void _shotClockTick(Timer time) {
     if (mCurrentShotclockTimeMilliseconds > 0) {
-      setState(() {
+      updateState(() {
         mCurrentShotclockTimeMilliseconds--;
       });
     }
@@ -82,7 +84,7 @@ abstract class HomeState extends State<HomeScreen> {
 
   @protected
   void changeHomeScore(int Value) {
-    setState(() {
+    updateState(() {
       mHomeScore += Value;
       if (mHomeScore < 0) {
         mHomeScore = 0;
@@ -92,7 +94,7 @@ abstract class HomeState extends State<HomeScreen> {
 
   @protected
   void changeAwayScore(int Value) {
-    setState(() {
+    updateState(() {
       mAwayScore += Value;
       if (mAwayScore < 0) {
         mAwayScore = 0;
@@ -102,7 +104,7 @@ abstract class HomeState extends State<HomeScreen> {
 
   @protected
   void changeQuarter(int Value) {
-    setState(() {
+    updateState(() {
       mQuarter += Value;
       if (mQuarter < 0) {
         mQuarter = 0;
@@ -111,22 +113,35 @@ abstract class HomeState extends State<HomeScreen> {
   }
 
   @protected
-  void resetHomeScore(){
-    setState( () {
+  void resetHomeScore() {
+    updateState( () {
       mHomeScore = 0;
     });
   }
 
   @protected
-  void resetAwayScore(){
-    setState( () {
+  void resetAwayScore() {
+    updateState( () {
       mAwayScore = 0;
     });
   }
   @protected
-  void resetQuarter(){
-    setState( () {
+  void resetQuarter() {
+    updateState( () {
       mQuarter = 0;
     });
   }
+
+  void updateState(Function function) {
+    setState(function);
+
+    RawDatagramSocket.bind(InternetAddress.anyIPv4, 42069).then((RawDatagramSocket udpSocket) {
+        udpSocket.broadcastEnabled = true;
+
+        List<int> data =utf8.encode('TEST');
+
+        udpSocket.send(data, InternetAddress("255.255.255.255"), 42069);
+      });
+  }
+
 }

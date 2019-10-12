@@ -2,6 +2,10 @@ matrix:
   include:
     - name: Android Build
       language: android
+      cache:
+        bundler: true
+        directories:
+          - $HOME/.pub-cache
       android:
         components:
           - build-tools-28.0.3

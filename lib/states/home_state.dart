@@ -10,16 +10,23 @@ abstract class HomeState extends State<HomeScreen> {
   @protected
   Timer mGameTimer;
   Timer mShotclockTimer;
+  Timer mRefreshTimer;
+
+  RawDatagramSocket mSocket;
+
   Duration mTickDuration = new Duration(milliseconds: 1);
+  Duration mRefreshTickDuration = new Duration(milliseconds: 100);
+
   int mDefaultGameTimeMilliseconds = 8 * 60 * 1000;
   int mDefaultShotclockTimeMilliseconds = 35 * 1000;
   int mTimeSeconds = 300; // 5 minutes
   int mCurrentGameTimeMilliseconds = 0;
   int mCurrentShotclockTimeMilliseconds = 0;
-  bool mIsRunning = false;
   int mHomeScore = 0;
   int mAwayScore = 0;
   int mQuarter = 0;
+
+  bool mIsRunning = false;
 
   @override
   void dispose() {
@@ -29,11 +36,14 @@ abstract class HomeState extends State<HomeScreen> {
 
   @protected
   void start() {
+
+    mGameTimer = new Timer.periodic(mTickDuration, _shotClockTick);
+    mShotclockTimer = new Timer.periodic(mTickDuration, _gameClockTick);
+    mRefreshTimer = new Timer.periodic(mRefreshTickDuration, _refreshTick);
+
     updateState(() {
       mIsRunning = true;
     });
-    mGameTimer = new Timer.periodic(mTickDuration, _shotClockTick);
-    mShotclockTimer = new Timer.periodic(mTickDuration, _gameClockTick);
   }
 
   @protected
@@ -43,6 +53,7 @@ abstract class HomeState extends State<HomeScreen> {
     });
     mGameTimer.cancel();
     mShotclockTimer.cancel();
+    mRefreshTimer.cancel();
   }
 
   @protected
@@ -53,33 +64,46 @@ abstract class HomeState extends State<HomeScreen> {
   }
 
   @protected
+  void setGameClock(int value) {
+    updateState(() {
+      mCurrentGameTimeMilliseconds = value * 1000;
+    });
+  }
+
+  @protected
   void resetShotClock() {
     updateState(() {
       mCurrentShotclockTimeMilliseconds = mDefaultShotclockTimeMilliseconds;
     });
   }
 
+  @protected
+  void setShotClock(int value) {
+    updateState(() {
+      mCurrentShotclockTimeMilliseconds = value;
+    });
+  }
+
   void _gameClockTick(Timer time) {
     if (mCurrentGameTimeMilliseconds > 0) {
-      updateState(() {
-        mCurrentGameTimeMilliseconds--;
-      });
+      mCurrentGameTimeMilliseconds--;
     }
     else {
       resetGameClock();
     }
   }
 
-
   void _shotClockTick(Timer time) {
     if (mCurrentShotclockTimeMilliseconds > 0) {
-      updateState(() {
-        mCurrentShotclockTimeMilliseconds--;
-      });
+      mCurrentShotclockTimeMilliseconds--;
     }
     else {
       resetShotClock();
     }
+  }
+
+  void _refreshTick(Timer time) {
+    updateState(() {});
   }
 
   @protected
@@ -138,10 +162,21 @@ abstract class HomeState extends State<HomeScreen> {
     RawDatagramSocket.bind(InternetAddress.anyIPv4, 42069).then((RawDatagramSocket udpSocket) {
         udpSocket.broadcastEnabled = true;
 
-        List<int> data =utf8.encode('TEST');
+        int Minutes = mCurrentGameTimeMilliseconds ~/ (60 * 1000);
+        int Seconds = (mCurrentGameTimeMilliseconds - (Minutes * 60 * 1000)) ~/ 1000;
 
-        udpSocket.send(data, InternetAddress("255.255.255.255"), 42069);
+        String ScorePacket =
+          mHomeScore.toString() + "," +
+          mAwayScore.toString() + "," +
+          Minutes.toString() + "," +
+          Seconds.toString();
+
+        udpSocket.send(utf8.encode(ScorePacket), InternetAddress("255.255.255.255"), 33333);
+
+        udpSocket.send(
+          utf8.encode((mCurrentShotclockTimeMilliseconds ~/ 1000).toString().padLeft(2,"0")),
+          InternetAddress("255.255.255.255"),
+          11111);
       });
   }
-
 }

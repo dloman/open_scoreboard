@@ -30,17 +30,21 @@ class HomeView extends HomeState {
         children: <Widget>[
           GameClockView(
             currentTimeMilliseconds: mCurrentGameTimeMilliseconds,
+            defaultGameclock: mDefaultGameTimeMilliseconds,
             running: mIsRunning,
             startFunction: start,
             stopFunction: stop,
             resetGameFunction: resetGameClock,
+            setGameFunction: setGameClock,
           ),
           ShotClockView(
             currentTimeMilliseconds: mCurrentShotclockTimeMilliseconds,
+            defaultShotclock: mDefaultShotclockTimeMilliseconds,
             running: mIsRunning,
             startFunction: start,
             stopFunction: stop,
             resetShotFunction: resetShotClock,
+            setShotFunction: setShotClock,
           ),
           ScoreQuarter(
             currentHomeScore: mHomeScore.toString(),
@@ -78,20 +82,24 @@ class HomeView extends HomeState {
             children: <Widget>[
               GameClockView(
                 currentTimeMilliseconds: mCurrentGameTimeMilliseconds,
+                defaultGameclock: mDefaultGameTimeMilliseconds,
                 running: mIsRunning,
                 startFunction: start,
                 stopFunction: stop,
                 resetGameFunction: resetGameClock,
+                setGameFunction: setGameClock,
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
                   ShotClockView(
                     currentTimeMilliseconds: mCurrentShotclockTimeMilliseconds,
+                    defaultShotclock: mDefaultShotclockTimeMilliseconds,
                     running: mIsRunning,
                     startFunction: start,
                     stopFunction: stop,
                     resetShotFunction: resetShotClock,
+                    setShotFunction: setShotClock,
                   ),
                   EditableNumber(
                     label: "Quarter",
@@ -115,4 +123,27 @@ class HomeView extends HomeState {
       )
     );
   }
+
+  void _showWifiDialog() {
+      // flutter defined function
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          // return object of type Dialog
+          return AlertDialog(
+            title: new Text("Alert Dialog title"),
+            content: new Text("Alert Dialog body"),
+            actions: <Widget>[
+              // usually buttons at the bottom of the dialog
+              new FlatButton(
+                child: new Text("Close"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
 }

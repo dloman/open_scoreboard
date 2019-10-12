@@ -1,20 +1,26 @@
 import 'package:flutter/material.dart';
 
 import '../colors.dart';
+import 'package:flutter/cupertino.dart';
+
 
 class GameClockView extends StatelessWidget {
   final int currentTimeMilliseconds;
+  final int defaultGameclock;
   final bool running;
   final Function startFunction;
   final Function stopFunction;
   final Function resetGameFunction;
+  final Function setGameFunction;
 
   GameClockView({
     this.currentTimeMilliseconds,
+    this.defaultGameclock,
     this.running,
     this.startFunction,
     this.stopFunction,
     this.resetGameFunction,
+    this.setGameFunction,
   });
 
   String _stringTime() {
@@ -53,7 +59,7 @@ class GameClockView extends StatelessWidget {
               ),
             ),
             GestureDetector(
-              onLongPress: resetGameFunction,
+              onLongPress: () { _showNumberPicker(context); },
               child: Text(
                   _stringTime(),
                   style: TextStyle(
@@ -82,6 +88,22 @@ class GameClockView extends StatelessWidget {
           ],
         ),
       )
+    );
+  }
+
+  Future _showNumberPicker(BuildContext context) async {
+    await showCupertinoModalPopup<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return CupertinoTimerPicker(
+            mode: CupertinoTimerPickerMode.ms,
+            initialTimerDuration: Duration(seconds: 100),
+            minuteInterval: 1,
+            secondInterval: 1,
+            onTimerDurationChanged: (Duration newTimer) {
+            },
+        );
+      }
     );
   }
 }

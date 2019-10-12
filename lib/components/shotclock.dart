@@ -1,20 +1,25 @@
 import 'package:flutter/material.dart';
 
 import '../colors.dart';
+import 'package:numberpicker/numberpicker.dart';
 
 class ShotClockView extends StatelessWidget {
   final int currentTimeMilliseconds;
+  final int defaultShotclock;
   final bool running;
   final Function startFunction;
   final Function stopFunction;
   final Function resetShotFunction;
+  final Function setShotFunction;
 
   ShotClockView({
     this.currentTimeMilliseconds,
+    this.defaultShotclock,
     this.running,
     this.startFunction,
     this.stopFunction,
     this.resetShotFunction,
+    this.setShotFunction,
   });
 
   String _stringTime() {
@@ -50,7 +55,7 @@ class ShotClockView extends StatelessWidget {
               ),
             ),
             GestureDetector(
-              onLongPress: resetShotFunction,
+              onLongPress: () { _showNumberPicker(context); },
               child: Text(
                   _stringTime(),
                   style: TextStyle(
@@ -80,5 +85,23 @@ class ShotClockView extends StatelessWidget {
         ),
       )
     );
+  }
+
+  Future _showNumberPicker(BuildContext context) async {
+    await showDialog<int>(
+      context: context,
+      builder: (BuildContext context) {
+        return new NumberPickerDialog.integer(
+          minValue: 0,
+          maxValue: defaultShotclock,
+          title: new Text("Set Desired Shot Clock"),
+          initialIntegerValue: (currentTimeMilliseconds ~/ (1000)),
+        );
+      }
+    ).then((int value) {
+      if (value != null) {
+        setShotFunction(value * 1000);
+      }
+    });
   }
 }

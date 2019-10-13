@@ -4,13 +4,16 @@ Open Scoreboard
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+Make it do things.
 
-A few resources to get you started if this is your first Flutter project:
+## Deploy stuff
 
-- [Lab: Write your first Flutter app](https://flutter.io/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.io/docs/cookbook)
+### Recreate encrypted secrets file
 
-For help getting started with Flutter, view our 
-[online documentation](https://flutter.io/docs), which offers tutorials, 
-samples, guidance on mobile development, and a full API reference.
+```sh
+$ tar cvf secrets.tar android/key.properties android/app/serviceAccount.json android/app/upload.keystore
+$ travis encrypt-file secrets.tar
+```
+
+## Credits
+App icon made by [mavadee](https://www.flaticon.com/authors/mavadee) from [Flaticon](https://www.flaticon.com)

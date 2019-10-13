@@ -20,5 +20,5 @@ matrix:
         - gem install bundler && cd android && bundle install && cd ..
       script:
         - flutter packages get
-        - flutter build apk
+        - flutter build apk --release
         - cd android && bundle exec fastlane internal

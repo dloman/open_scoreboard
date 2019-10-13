@@ -1,24 +1,35 @@
 matrix:
   include:
-    - name: Android Build
-      language: android
-      cache:
-        bundler: true
-        directories:
-          - $HOME/.pub-cache
-      android:
-        components:
-          - build-tools-28.0.3
-          - android-28
-        licenses:
-          - 'android-sdk-license-.+'
-      before_script:
+    - name: Android Test Build
+        language: android
+        cache:
+          bundler: true
+          directories:
+            - $HOME/.pub-cache
+        android:
+          components:
+            - build-tools-28.0.3
+            - android-28
+          licenses:
+            - 'android-sdk-license-.+'
+        stages:
+          - name: android_prepare_build
+          - name: android_build
+          - name: android_deploy
+            if: branch = master
+
+jobs:
+  include:
+    - stage: android_prepare_build
+      script:
         - openssl aes-256-cbc -K $encrypted_1fe07e098b28_key -iv $encrypted_1fe07e098b28_iv -in secrets.tar.enc -out secrets.tar -d
         - tar xvf secrets.tar
         - git clone https://github.com/flutter/flutter.git -b stable
         - export PATH=`pwd`/flutter/bin:`pwd`/flutter/bin/cache/dart-sdk/bin:$PATH
         - gem install bundler && cd android && bundle install && cd ..
+    - stage: android_build
       script:
         - flutter packages get
         - flutter build apk --release
-        - cd android && bundle exec fastlane internal
+    - stage: android_deploy
+      script: cd android && bundle exec fastlane internal

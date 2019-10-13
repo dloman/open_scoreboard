@@ -76,3 +76,4 @@ build/
 **/android/app/serviceAccount.json
 **/secrets.tar
 **/android/app/upload.keystore
+**/android/key.properties

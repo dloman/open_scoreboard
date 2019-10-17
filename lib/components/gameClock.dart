@@ -91,19 +91,25 @@ class GameClockView extends StatelessWidget {
     );
   }
 
-  Future _showNumberPicker(BuildContext context) async {
-    await showCupertinoModalPopup<void>(
-      context: context,
-      builder: (BuildContext context) {
-        return CupertinoTimerPicker(
-            mode: CupertinoTimerPickerMode.ms,
-            initialTimerDuration: Duration(seconds: 100),
-            minuteInterval: 1,
-            secondInterval: 1,
-            onTimerDurationChanged: (Duration newTimer) {
-            },
-        );
-      }
-    );
+  void _showNumberPicker(BuildContext context) {
+    new Picker(
+        adapter: NumberPickerAdapter(data: [
+          NumberPickerColumn(begin: 0, end: 8),
+          NumberPickerColumn(begin: 0, end: 59),
+        ]),
+        delimiter: [
+          PickerDelimiter(child: Container(
+            width: 30.0,
+            alignment: Alignment.center,
+            child: Icon(Icons.more_vert),
+          ))
+        ],
+        hideHeader: true,
+        title: new Text("Please Select"),
+        onConfirm: (Picker picker, List value) {
+          print(value.toString());
+          print(picker.getSelectedValues());
+        }
+    ).showDialog(context);
   }
 }

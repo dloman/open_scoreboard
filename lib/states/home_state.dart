@@ -15,7 +15,7 @@ abstract class HomeState extends State<HomeScreen> {
   RawDatagramSocket mSocket;
 
   Duration mTickDuration = new Duration(milliseconds: 1);
-  Duration mRefreshTickDuration = new Duration(milliseconds: 100);
+  Duration mRefreshTickDuration = new Duration(seconds: 1);
 
   int mDefaultGameTimeMilliseconds = 8 * 60 * 1000;
   int mDefaultShotclockTimeMilliseconds = 35 * 1000;
@@ -43,6 +43,16 @@ abstract class HomeState extends State<HomeScreen> {
 
     updateState(() {
       mIsRunning = true;
+
+      if (mCurrentGameTimeMilliseconds <= 0)
+      {
+        resetGameClock();
+      }
+
+      if (mCurrentShotclockTimeMilliseconds <= 0)
+      {
+        resetShotClock();
+      }
     });
   }
 
@@ -66,14 +76,23 @@ abstract class HomeState extends State<HomeScreen> {
   @protected
   void setGameClock(int value) {
     updateState(() {
-      mCurrentGameTimeMilliseconds = value * 1000;
+      mCurrentGameTimeMilliseconds = value;
     });
   }
 
   @protected
   void resetShotClock() {
     updateState(() {
-      mCurrentShotclockTimeMilliseconds = mDefaultShotclockTimeMilliseconds;
+      if (
+          mCurrentGameTimeMilliseconds <= mDefaultShotclockTimeMilliseconds &&
+          mCurrentGameTimeMilliseconds != 0)
+      {
+        mCurrentShotclockTimeMilliseconds = mCurrentGameTimeMilliseconds;
+      }
+      else
+      {
+        mCurrentShotclockTimeMilliseconds = mDefaultShotclockTimeMilliseconds;
+      }
     });
   }
 
@@ -88,17 +107,11 @@ abstract class HomeState extends State<HomeScreen> {
     if (mCurrentGameTimeMilliseconds > 0) {
       mCurrentGameTimeMilliseconds--;
     }
-    else {
-      resetGameClock();
-    }
   }
 
   void _shotClockTick(Timer time) {
     if (mCurrentShotclockTimeMilliseconds > 0) {
       mCurrentShotclockTimeMilliseconds--;
-    }
-    else {
-      resetShotClock();
     }
   }
 

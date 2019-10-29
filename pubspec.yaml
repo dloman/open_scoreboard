@@ -10,7 +10,7 @@ dependencies:
     sdk: flutter
 
   flutter_picker:
-    git: git://github.com/yangyxd/flutter_picker.git
+    git: git://github.com/dloman/flutter_picker.git
 
   cupertino_icons: ^0.1.2
 

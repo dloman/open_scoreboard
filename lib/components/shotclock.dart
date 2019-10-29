@@ -88,18 +88,21 @@ class ShotClockView extends StatelessWidget {
   }
 
   void _showNumberPicker(BuildContext context) {
-    Picker(
+    new Picker(
         adapter: NumberPickerAdapter(data: [
-          NumberPickerColumn(begin: 0, end: defaultShotclock)),
+          NumberPickerColumn(begin: 0, end: defaultShotclock),
         ]),
-        hideHeader: true,
-        title: Text("Select Shotclock Value"),
-        selectedTextStyle: TextStyle(color: Colors.white),
         backgroundColor: kOpenScoreboardGreyDark,
+        headercolor: kOpenScoreboardGreyDark,
+        containerColor: kOpenScoreboardGreyDark,
+        hideHeader: true,
+        title: new Text("Set Current Shotclock Value", style: TextStyle(color: kOpenScoreboardBlue)),
+        textStyle: TextStyle(color: kOpenScoreboardBlue),
+        cancelTextStyle: TextStyle(color: kOpenScoreboardBlue),
+        confirmTextStyle: TextStyle(color: kOpenScoreboardBlue),
         onConfirm: (Picker picker, List value) {
-          print(value.toString());
-          print(picker.getSelectedValues());
+          setShotFunction(picker.getSelectedValues()[0] * 1000);
         }
-    ).showDialog(context);
+    ).showDialog(context, kOpenScoreboardGreyDark);
   }
 }

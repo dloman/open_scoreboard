@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../colors.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_picker/flutter_picker.dart';
 
 
 class GameClockView extends StatelessWidget {
@@ -97,6 +98,9 @@ class GameClockView extends StatelessWidget {
           NumberPickerColumn(begin: 0, end: 8),
           NumberPickerColumn(begin: 0, end: 59),
         ]),
+        backgroundColor: kOpenScoreboardGreyDark,
+        headercolor: kOpenScoreboardGreyDark,
+        containerColor: kOpenScoreboardGreyDark,
         delimiter: [
           PickerDelimiter(child: Container(
             width: 30.0,
@@ -105,11 +109,13 @@ class GameClockView extends StatelessWidget {
           ))
         ],
         hideHeader: true,
-        title: new Text("Please Select"),
+        title: new Text("Set Current Game Clock Value", style: TextStyle(color: kOpenScoreboardBlue)),
+        textStyle: TextStyle(color: kOpenScoreboardBlue),
+        cancelTextStyle: TextStyle(color: kOpenScoreboardBlue),
+        confirmTextStyle: TextStyle(color: kOpenScoreboardBlue),
         onConfirm: (Picker picker, List value) {
-          print(value.toString());
-          print(picker.getSelectedValues());
+          setGameFunction((value[0] * 60 * 1000) + value[1] * 1000);
         }
-    ).showDialog(context);
+    ).showDialog(context, kOpenScoreboardGreyDark);
   }
 }

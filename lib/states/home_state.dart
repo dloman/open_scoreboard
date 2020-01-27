@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../screens/home_screen.dart';
 
@@ -53,6 +54,7 @@ abstract class HomeState extends State<HomeScreen> {
         resetShotClock();
       }
     });
+    HapticFeedback.selectionClick();
   }
 
   @protected
@@ -62,6 +64,7 @@ abstract class HomeState extends State<HomeScreen> {
     });
     mGameStopwatch.stop();
     mShotclockStopwatch.stop();
+    HapticFeedback.selectionClick();
   }
 
   @protected
@@ -111,6 +114,7 @@ abstract class HomeState extends State<HomeScreen> {
         mShotclockStopwatch.start();
       }
     });
+    HapticFeedback.heavyImpact();
   }
 
   @protected

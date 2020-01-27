@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../colors.dart';
-import 'package:numberpicker/numberpicker.dart';
+import 'package:flutter_picker/flutter_picker.dart';
 
 class ShotClockView extends StatelessWidget {
   final int currentTimeMilliseconds;
@@ -87,21 +87,22 @@ class ShotClockView extends StatelessWidget {
     );
   }
 
-  Future _showNumberPicker(BuildContext context) async {
-    await showDialog<int>(
-      context: context,
-      builder: (BuildContext context) {
-        return new NumberPickerDialog.integer(
-          minValue: 0,
-          maxValue: defaultShotclock,
-          title: new Text("Set Desired Shot Clock"),
-          initialIntegerValue: (currentTimeMilliseconds ~/ (1000)),
-        );
-      }
-    ).then((int value) {
-      if (value != null) {
-        setShotFunction(value * 1000);
-      }
-    });
+  void _showNumberPicker(BuildContext context) {
+    new Picker(
+        adapter: NumberPickerAdapter(data: [
+          NumberPickerColumn(begin: 0, end: defaultShotclock),
+        ]),
+        backgroundColor: kOpenScoreboardGreyDark,
+        headercolor: kOpenScoreboardGreyDark,
+        containerColor: kOpenScoreboardGreyDark,
+        hideHeader: true,
+        title: new Text("Set Current Shotclock Value", style: TextStyle(color: kOpenScoreboardBlue)),
+        textStyle: TextStyle(color: kOpenScoreboardBlue),
+        cancelTextStyle: TextStyle(color: kOpenScoreboardBlue),
+        confirmTextStyle: TextStyle(color: kOpenScoreboardBlue),
+        onConfirm: (Picker picker, List value) {
+          setShotFunction(picker.getSelectedValues()[0] * 1000);
+        }
+    ).showDialog(context, kOpenScoreboardGreyDark);
   }
 }

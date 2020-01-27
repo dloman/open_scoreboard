@@ -3,25 +3,25 @@ import 'dart:io';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../screens/home_screen.dart';
 
 abstract class HomeState extends State<HomeScreen> {
   @protected
-  Timer mGameTimer;
-  Timer mShotclockTimer;
+  Stopwatch mGameStopwatch = new Stopwatch();
+  Stopwatch mShotclockStopwatch = new Stopwatch();
   Timer mRefreshTimer;
 
-  RawDatagramSocket mSocket;
-
-  Duration mTickDuration = new Duration(milliseconds: 1);
-  Duration mRefreshTickDuration = new Duration(milliseconds: 100);
+  Duration mRefreshTickDuration = new Duration(milliseconds: 30);
 
   int mDefaultGameTimeMilliseconds = 8 * 60 * 1000;
   int mDefaultShotclockTimeMilliseconds = 35 * 1000;
   int mTimeSeconds = 300; // 5 minutes
   int mCurrentGameTimeMilliseconds = 0;
   int mCurrentShotclockTimeMilliseconds = 0;
+  int mAdditionalGameTimeMilliseconds = 0;
+  int mAdditionalShotclockMilliseconds = 0;
   int mHomeScore = 0;
   int mAwayScore = 0;
   int mQuarter = 0;
@@ -37,13 +37,24 @@ abstract class HomeState extends State<HomeScreen> {
   @protected
   void start() {
 
-    mGameTimer = new Timer.periodic(mTickDuration, _shotClockTick);
-    mShotclockTimer = new Timer.periodic(mTickDuration, _gameClockTick);
     mRefreshTimer = new Timer.periodic(mRefreshTickDuration, _refreshTick);
+    mGameStopwatch.start();
+    mShotclockStopwatch.start();
 
     updateState(() {
       mIsRunning = true;
+
+      if (mCurrentGameTimeMilliseconds <= 0)
+      {
+        resetGameClock();
+      }
+
+      if (mCurrentShotclockTimeMilliseconds <= 0)
+      {
+        resetShotClock();
+      }
     });
+    HapticFeedback.selectionClick();
   }
 
   @protected
@@ -51,59 +62,92 @@ abstract class HomeState extends State<HomeScreen> {
     updateState(() {
       mIsRunning = false;
     });
-    mGameTimer.cancel();
-    mShotclockTimer.cancel();
-    mRefreshTimer.cancel();
+    mGameStopwatch.stop();
+    mShotclockStopwatch.stop();
+    HapticFeedback.selectionClick();
   }
 
   @protected
   void resetGameClock() {
     updateState(() {
-      mCurrentGameTimeMilliseconds = mDefaultGameTimeMilliseconds;
+      mGameStopwatch = new Stopwatch();
+
+      if (mIsRunning) {
+        mGameStopwatch.start();
+      }
+
+      mAdditionalGameTimeMilliseconds = 0;
     });
   }
 
   @protected
   void setGameClock(int value) {
     updateState(() {
-      mCurrentGameTimeMilliseconds = value * 1000;
+      resetGameClock();
+
+      mAdditionalGameTimeMilliseconds = mDefaultGameTimeMilliseconds - value;
+
+      updateTime();
     });
   }
 
   @protected
   void resetShotClock() {
     updateState(() {
-      mCurrentShotclockTimeMilliseconds = mDefaultShotclockTimeMilliseconds;
+
+      if (
+          mCurrentGameTimeMilliseconds <= mDefaultShotclockTimeMilliseconds &&
+          mCurrentGameTimeMilliseconds != 0)
+      {
+        mCurrentShotclockTimeMilliseconds = mCurrentGameTimeMilliseconds;
+      }
+      else
+      {
+        mCurrentShotclockTimeMilliseconds = mDefaultShotclockTimeMilliseconds;
+      }
+
+      mShotclockStopwatch = new Stopwatch();
+
+      mAdditionalShotclockMilliseconds = 0;
+
+      if (mIsRunning) {
+        mShotclockStopwatch.start();
+      }
     });
+    HapticFeedback.heavyImpact();
   }
 
   @protected
   void setShotClock(int value) {
     updateState(() {
-      mCurrentShotclockTimeMilliseconds = value;
+
+      resetShotClock();
+
+      mAdditionalShotclockMilliseconds = mDefaultShotclockTimeMilliseconds - value;
+
+      updateTime();
     });
   }
 
-  void _gameClockTick(Timer time) {
-    if (mCurrentGameTimeMilliseconds > 0) {
-      mCurrentGameTimeMilliseconds--;
-    }
-    else {
-      resetGameClock();
-    }
-  }
+  void updateTime() {
+    mCurrentGameTimeMilliseconds =
+      mDefaultGameTimeMilliseconds - (mGameStopwatch.elapsedMilliseconds + mAdditionalGameTimeMilliseconds);
 
-  void _shotClockTick(Timer time) {
-    if (mCurrentShotclockTimeMilliseconds > 0) {
-      mCurrentShotclockTimeMilliseconds--;
+    if (mCurrentGameTimeMilliseconds < 0) {
+      mCurrentGameTimeMilliseconds = 0;
     }
-    else {
-      resetShotClock();
+
+    mCurrentShotclockTimeMilliseconds =
+      mDefaultShotclockTimeMilliseconds - (mShotclockStopwatch.elapsedMilliseconds + mAdditionalShotclockMilliseconds);
+
+    if (mCurrentShotclockTimeMilliseconds < 0) {
+      mCurrentShotclockTimeMilliseconds = 0;
     }
+
   }
 
   void _refreshTick(Timer time) {
-    updateState(() {});
+    updateState(() {updateTime();});
   }
 
   @protected
@@ -177,6 +221,8 @@ abstract class HomeState extends State<HomeScreen> {
           utf8.encode((mCurrentShotclockTimeMilliseconds ~/ 1000).toString().padLeft(2,"0")),
           InternetAddress("255.255.255.255"),
           11111);
+
+        udpSocket.close();
       });
   }
 }

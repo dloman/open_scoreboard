@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../colors.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_picker/flutter_picker.dart';
 
 
 class GameClockView extends StatelessWidget {
@@ -91,19 +92,30 @@ class GameClockView extends StatelessWidget {
     );
   }
 
-  Future _showNumberPicker(BuildContext context) async {
-    await showCupertinoModalPopup<void>(
-      context: context,
-      builder: (BuildContext context) {
-        return CupertinoTimerPicker(
-            mode: CupertinoTimerPickerMode.ms,
-            initialTimerDuration: Duration(seconds: 100),
-            minuteInterval: 1,
-            secondInterval: 1,
-            onTimerDurationChanged: (Duration newTimer) {
-            },
-        );
-      }
-    );
+  void _showNumberPicker(BuildContext context) {
+    new Picker(
+        adapter: NumberPickerAdapter(data: [
+          NumberPickerColumn(begin: 0, end: 8),
+          NumberPickerColumn(begin: 0, end: 59),
+        ]),
+        backgroundColor: kOpenScoreboardGreyDark,
+        headercolor: kOpenScoreboardGreyDark,
+        containerColor: kOpenScoreboardGreyDark,
+        delimiter: [
+          PickerDelimiter(child: Container(
+            width: 30.0,
+            alignment: Alignment.center,
+            child: Icon(Icons.more_vert),
+          ))
+        ],
+        hideHeader: true,
+        title: new Text("Set Current Game Clock Value", style: TextStyle(color: kOpenScoreboardBlue)),
+        textStyle: TextStyle(color: kOpenScoreboardBlue),
+        cancelTextStyle: TextStyle(color: kOpenScoreboardBlue),
+        confirmTextStyle: TextStyle(color: kOpenScoreboardBlue),
+        onConfirm: (Picker picker, List value) {
+          setGameFunction((value[0] * 60 * 1000) + value[1] * 1000);
+        }
+    ).showDialog(context, kOpenScoreboardGreyDark);
   }
 }

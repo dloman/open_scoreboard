@@ -14,7 +14,6 @@ class HomeView extends HomeState {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: kOpenScoreboardGreyDark,
       body: OrientationBuilder(
         builder: (context, orientation) {
           return orientation == Orientation.portrait ? _GetPortrait() : _GetLandscape();
@@ -39,7 +38,7 @@ class HomeView extends HomeState {
           ),
           ShotClockView(
             currentTimeMilliseconds: mCurrentShotclockTimeMilliseconds,
-            defaultShotclock: mDefaultShotclockTimeMilliseconds,
+            defaultShotclock: mDefaultShotclockTimeMilliseconds ~/ 1000,
             running: mIsRunning,
             startFunction: start,
             stopFunction: stop,

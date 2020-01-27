@@ -1,6 +1,6 @@
 name: open_scoreboard
 description: A companion app for the Open Scoreboard scoreboard
-version: 1.0.0+3
+version: 3.0.0+3
 
 environment:
   sdk: ">=2.0.0-dev.68.0 <3.0.0"
@@ -9,7 +9,8 @@ dependencies:
   flutter:
     sdk: flutter
 
-  numberpicker: ^1.1.0
+  flutter_picker:
+    git: git://github.com/dloman/flutter_picker.git
 
   cupertino_icons: ^0.1.2
 

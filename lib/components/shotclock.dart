@@ -11,6 +11,7 @@ class ShotClockView extends StatelessWidget {
   final Function stopFunction;
   final Function resetShotFunction;
   final Function setShotFunction;
+  final Function setDefaultShotFunction;
 
   ShotClockView({
     this.currentTimeMilliseconds,
@@ -20,6 +21,7 @@ class ShotClockView extends StatelessWidget {
     this.stopFunction,
     this.resetShotFunction,
     this.setShotFunction,
+    this.setDefaultShotFunction,
   });
 
   String _stringTime() {
@@ -55,7 +57,13 @@ class ShotClockView extends StatelessWidget {
               ),
             ),
             GestureDetector(
-              onLongPress: () { _showNumberPicker(context); },
+              onLongPress: () { _showNumberPicker(
+                  context,
+                  "Current",
+                  defaultShotclock,
+                  (Picker picker, List value) {
+                    setShotFunction(picker.getSelectedValues()[0] * 1000);
+                  }); },
               child: Text(
                   _stringTime(),
                   style: TextStyle(
@@ -75,6 +83,14 @@ class ShotClockView extends StatelessWidget {
                 ),
                 RaisedButton(
                   onPressed: resetShotFunction,
+                  onLongPress: () { _showNumberPicker(
+                      context,
+                      "Default",
+                      99,
+                      (Picker picker, List value) {
+                        setDefaultShotFunction(picker.getSelectedValues()[0] * 1000);
+                      }
+                      ); },
                   textColor: Colors.white,
                   child: Text('Reset Shotclock'),
                   color: kOpenScoreboardGreyDarker,
@@ -87,22 +103,21 @@ class ShotClockView extends StatelessWidget {
     );
   }
 
-  void _showNumberPicker(BuildContext context) {
+  void _showNumberPicker(BuildContext context, String display, int end, onConfirm) {
     new Picker(
         adapter: NumberPickerAdapter(data: [
-          NumberPickerColumn(begin: 0, end: defaultShotclock),
+          NumberPickerColumn(begin: 0, end: end),
         ]),
         backgroundColor: kOpenScoreboardGreyDark,
         headercolor: kOpenScoreboardGreyDark,
         containerColor: kOpenScoreboardGreyDark,
         hideHeader: true,
-        title: new Text("Set Current Shotclock Value", style: TextStyle(color: kOpenScoreboardBlue)),
+        title: new Text("Set " + display +" Shotclock Value",
+            style: TextStyle(color: kOpenScoreboardBlue)),
         textStyle: TextStyle(color: kOpenScoreboardBlue),
         cancelTextStyle: TextStyle(color: kOpenScoreboardBlue),
         confirmTextStyle: TextStyle(color: kOpenScoreboardBlue),
-        onConfirm: (Picker picker, List value) {
-          setShotFunction(picker.getSelectedValues()[0] * 1000);
-        }
-    ).showDialog(context, kOpenScoreboardGreyDark);
+        onConfirm: onConfirm
+        ).showDialog(context, kOpenScoreboardGreyDark);
   }
 }

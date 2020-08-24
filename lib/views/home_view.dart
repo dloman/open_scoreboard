@@ -35,6 +35,7 @@ class HomeView extends HomeState {
             stopFunction: stop,
             resetGameFunction: resetGameClock,
             setGameFunction: setGameClock,
+            setDefaultGameFunction: setDefaultGameClock,
           ),
           ShotClockView(
             currentTimeMilliseconds: mCurrentShotclockTimeMilliseconds,
@@ -44,6 +45,7 @@ class HomeView extends HomeState {
             stopFunction: stop,
             resetShotFunction: resetShotClock,
             setShotFunction: setShotClock,
+            setDefaultShotFunction: setDefaultShotClock,
           ),
           ScoreQuarter(
             currentHomeScore: mHomeScore.toString(),
@@ -87,6 +89,7 @@ class HomeView extends HomeState {
                 stopFunction: stop,
                 resetGameFunction: resetGameClock,
                 setGameFunction: setGameClock,
+                setDefaultGameFunction: setDefaultGameClock,
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -99,6 +102,7 @@ class HomeView extends HomeState {
                     stopFunction: stop,
                     resetShotFunction: resetShotClock,
                     setShotFunction: setShotClock,
+                    setDefaultShotFunction: setDefaultShotClock,
                   ),
                   EditableNumber(
                     label: "Quarter",

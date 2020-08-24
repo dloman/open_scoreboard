@@ -92,6 +92,18 @@ abstract class HomeState extends State<HomeScreen> {
   }
 
   @protected
+  void setDefaultGameClock(int value) {
+    updateState(() {
+
+      mDefaultGameTimeMilliseconds = value;
+
+      resetGameClock();
+
+      updateTime();
+    });
+  }
+
+  @protected
   void resetShotClock() {
     updateState(() {
 
@@ -124,6 +136,18 @@ abstract class HomeState extends State<HomeScreen> {
       resetShotClock();
 
       mAdditionalShotclockMilliseconds = mDefaultShotclockTimeMilliseconds - value;
+
+      updateTime();
+    });
+  }
+
+  @protected
+  void setDefaultShotClock(int value) {
+    print("we here");
+    updateState(() {
+      mDefaultShotclockTimeMilliseconds = value;
+
+      resetShotClock();
 
       updateTime();
     });

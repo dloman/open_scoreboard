@@ -13,6 +13,7 @@ class GameClockView extends StatelessWidget {
   final Function stopFunction;
   final Function resetGameFunction;
   final Function setGameFunction;
+  final Function setDefaultGameFunction;
 
   GameClockView({
     this.currentTimeMilliseconds,
@@ -22,6 +23,7 @@ class GameClockView extends StatelessWidget {
     this.stopFunction,
     this.resetGameFunction,
     this.setGameFunction,
+    this.setDefaultGameFunction
   });
 
   String _stringTime() {
@@ -60,7 +62,15 @@ class GameClockView extends StatelessWidget {
               ),
             ),
             GestureDetector(
-              onLongPress: () { _showNumberPicker(context); },
+              onLongPress: () {
+                _showNumberPicker(
+                    context,
+                    "Current",
+                    (defaultGameclock ~/ (60 * 1000)),
+                    (Picker picker, List value) {
+                      setGameFunction((value[0] * 60 * 1000) + value[1] * 1000);
+                    });
+              },
               child: Text(
                   _stringTime(),
                   style: TextStyle(
@@ -80,6 +90,15 @@ class GameClockView extends StatelessWidget {
                 ),
                 RaisedButton(
                   onPressed: resetGameFunction,
+                  onLongPress: () {
+                    _showNumberPicker(
+                        context,
+                        "Default",
+                        99,
+                        (Picker picker, List value) {
+                          setDefaultGameFunction((value[0] * 60 * 1000) + value[1] * 1000);
+                        });
+                  },
                   textColor: Colors.white,
                   child: Text('Reset Game Clock'),
                   color: kOpenScoreboardGreyDarker,
@@ -92,10 +111,10 @@ class GameClockView extends StatelessWidget {
     );
   }
 
-  void _showNumberPicker(BuildContext context) {
+  void _showNumberPicker(BuildContext context, String display, int end, Function onConfirm) {
     new Picker(
         adapter: NumberPickerAdapter(data: [
-          NumberPickerColumn(begin: 0, end: 8),
+          NumberPickerColumn(begin: 0, end: end),
           NumberPickerColumn(begin: 0, end: 59),
         ]),
         backgroundColor: kOpenScoreboardGreyDark,
@@ -109,13 +128,11 @@ class GameClockView extends StatelessWidget {
           ))
         ],
         hideHeader: true,
-        title: new Text("Set Current Game Clock Value", style: TextStyle(color: kOpenScoreboardBlue)),
+        title: new Text("Set "+ display +" Game Clock Value", style: TextStyle(color: kOpenScoreboardBlue)),
         textStyle: TextStyle(color: kOpenScoreboardBlue),
         cancelTextStyle: TextStyle(color: kOpenScoreboardBlue),
         confirmTextStyle: TextStyle(color: kOpenScoreboardBlue),
-        onConfirm: (Picker picker, List value) {
-          setGameFunction((value[0] * 60 * 1000) + value[1] * 1000);
-        }
+        onConfirm: onConfirm
     ).showDialog(context, kOpenScoreboardGreyDark);
   }
 }

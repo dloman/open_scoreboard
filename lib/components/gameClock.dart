@@ -27,11 +27,9 @@ class GameClockView extends StatelessWidget {
   });
 
   String _stringTime() {
-    var minutes = (currentTimeMilliseconds ~/ (60 * 1000));
-    var minutesString = minutes.toString().padLeft(2, '0');
+    var minutesString = _getMinutes(currentTimeMilliseconds).toString().padLeft(2, '0');
 
-    var seconds = (currentTimeMilliseconds - (minutes * 60 * 1000)) ~/ 1000;
-    var secondsString = seconds.toString().padLeft(2, '0');
+    var secondsString = _getSeconds(currentTimeMilliseconds).toString().padLeft(2, '0');
 
     return "$minutesString:$secondsString";
   }
@@ -67,6 +65,8 @@ class GameClockView extends StatelessWidget {
                     context,
                     "Current",
                     (defaultGameclock ~/ (60 * 1000)),
+                    _getMinutes(currentTimeMilliseconds),
+                    _getSeconds(currentTimeMilliseconds),
                     (Picker picker, List value) {
                       setGameFunction((value[0] * 60 * 1000) + value[1] * 1000);
                     });
@@ -95,6 +95,8 @@ class GameClockView extends StatelessWidget {
                         context,
                         "Default",
                         99,
+                        _getMinutes(defaultGameclock),
+                        _getSeconds(defaultGameclock),
                         (Picker picker, List value) {
                           setDefaultGameFunction((value[0] * 60 * 1000) + value[1] * 1000);
                         });
@@ -111,11 +113,25 @@ class GameClockView extends StatelessWidget {
     );
   }
 
-  void _showNumberPicker(BuildContext context, String display, int end, Function onConfirm) {
+  int _getMinutes(int milliseconds) {
+    return (milliseconds ~/ (60 * 1000));
+  }
+
+  int _getSeconds (int milliseconds) {
+    return (milliseconds - (_getMinutes(milliseconds) * 60 * 1000)) ~/ 1000;
+  }
+
+  void _showNumberPicker(
+      BuildContext context,
+      String display,
+      int end,
+      int currentMinutes,
+      int currentSeconds,
+      Function onConfirm) {
     new Picker(
         adapter: NumberPickerAdapter(data: [
-          NumberPickerColumn(begin: 0, end: end),
-          NumberPickerColumn(begin: 0, end: 59),
+          NumberPickerColumn(begin: 0, end: end, initValue: currentMinutes),
+          NumberPickerColumn(begin: 0, end: 59, initValue: currentSeconds),
         ]),
         backgroundColor: kOpenScoreboardGreyDark,
         headercolor: kOpenScoreboardGreyDark,

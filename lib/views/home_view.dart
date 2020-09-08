@@ -14,6 +14,7 @@ class HomeView extends HomeState {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomPadding:false,
       body: OrientationBuilder(
         builder: (context, orientation) {
           return orientation == Orientation.portrait ? _GetPortrait() : _GetLandscape();

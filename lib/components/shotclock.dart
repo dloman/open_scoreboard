@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../colors.dart';
-import 'package:flutter_picker/flutter_picker.dart';
+import 'package:flutter/services.dart';
 
 class ShotClockView extends StatelessWidget {
   final int currentTimeMilliseconds;
@@ -12,6 +12,7 @@ class ShotClockView extends StatelessWidget {
   final Function resetShotFunction;
   final Function setShotFunction;
   final Function setDefaultShotFunction;
+  TextEditingController _controller = TextEditingController();
 
   ShotClockView({
     this.currentTimeMilliseconds,
@@ -61,9 +62,7 @@ class ShotClockView extends StatelessWidget {
                   context,
                   "Current",
                   defaultShotclock,
-                  (Picker picker, List value) {
-                    setShotFunction(picker.getSelectedValues()[0] * 1000);
-                  }); },
+                  (int value) { setShotFunction(value); },);},
               child: Text(
                   _stringTime(),
                   style: TextStyle(
@@ -87,9 +86,7 @@ class ShotClockView extends StatelessWidget {
                       context,
                       "Default",
                       99,
-                      (Picker picker, List value) {
-                        setDefaultShotFunction(picker.getSelectedValues()[0] * 1000);
-                      }
+                      (int value) { setDefaultShotFunction(value); },
                       ); },
                   textColor: Colors.white,
                   child: Text('Reset Shotclock'),
@@ -103,21 +100,50 @@ class ShotClockView extends StatelessWidget {
     );
   }
 
-  void _showNumberPicker(BuildContext context, String display, int end, onConfirm) {
-    new Picker(
-        adapter: NumberPickerAdapter(data: [
-          NumberPickerColumn(begin: 0, end: end),
-        ]),
-        backgroundColor: kOpenScoreboardGreyDark,
-        headercolor: kOpenScoreboardGreyDark,
-        containerColor: kOpenScoreboardGreyDark,
-        hideHeader: true,
-        title: new Text("Set " + display +" Shotclock Value",
-            style: TextStyle(color: kOpenScoreboardBlue)),
-        textStyle: TextStyle(color: kOpenScoreboardBlue),
-        cancelTextStyle: TextStyle(color: kOpenScoreboardBlue),
-        confirmTextStyle: TextStyle(color: kOpenScoreboardBlue),
-        onConfirm: onConfirm
-        ).showDialog(context, kOpenScoreboardGreyDark);
+  _showNumberPicker (BuildContext context, String display, int max, onConfirm) async  {
+    await showDialog<int>(
+      context: context,
+      child: new AlertDialog(
+        content: new Row(
+          children: <Widget>[
+            new Expanded(
+              child: new TextField(
+                style: TextStyle(color: kOpenScoreboardBlue),
+                inputFormatters: [WhitelistingTextInputFormatter.digitsOnly],
+                keyboardType: TextInputType.number,
+                autofocus: true,
+                decoration: new InputDecoration(
+                    labelText: "Set " + display +" Shotclock Value [0-" + max.toString()+"]"
+                ),
+                controller: _controller,
+              ),
+            )
+          ],
+        ),
+        actions: <Widget>[
+          new FlatButton(
+              child: const Text('Cancel'),
+              onPressed: () {
+                Navigator.pop(context);
+              }),
+          new FlatButton(
+              child: const Text('Confirm'),
+              onPressed: () {
+                  try {
+                    int value = (int.parse(_controller.text));
+
+                    if (value > 0 && value < max) {
+                      onConfirm(value * 1000);
+                      Navigator.pop(context);
+                    }
+                  }
+                  catch(e) {
+                    print(e);
+                  }
+              })
+        ],
+      ),
+    );
   }
+
 }

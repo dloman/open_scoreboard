@@ -1,4 +1,4 @@
-# open_scoreboard
+ # open_scoreboard
 
 Open Scoreboard
 

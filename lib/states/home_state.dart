@@ -143,7 +143,6 @@ abstract class HomeState extends State<HomeScreen> {
 
   @protected
   void setDefaultShotClock(int value) {
-    print("we here");
     updateState(() {
       mDefaultShotclockTimeMilliseconds = value;
 
